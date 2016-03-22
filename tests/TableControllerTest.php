@@ -215,11 +215,11 @@ class TableControllerTest extends WebTestCase
         $container = $this->app->getContainer();
         $this->dataaccess = new DataAccess($this->pdo);
         $container[TableController::class] = function ($c) {
-            return new TableController($this->logger, $this->dataaccess);
+            return new TableController($this->dataaccess, $this->logger);
         };
         $this->logger = $this->getMock(LoggerInterface::class);
         $this->dataAccessMock = $this->getMock(DataAccess::class, [],[$this->pdo]);//->disableOriginalConstructor()->getMock();
-        $this->controller = new TableController($this->logger, $this->dataAccessMock);
+        $this->controller = new TableController($this->dataAccessMock, $this->logger);
         $this->app->group('/noauth/api/{table:books}', function () {
             $this->get('', TableController::class . ':getAll');
             $this->get('/{id:[0-9]+}', TableController::class . ':get');

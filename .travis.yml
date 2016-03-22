@@ -6,7 +6,7 @@ php:
   - 7
   - hhvm
 install: composer install
-script: ./vendor/bin/phpunit 
+script: ./vendor/bin/phpunit --coverage-clover=coverage.xml
 after_success: 
   - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" -a "$TRAVIS_PHP_VERSION" != "7" ]; then bash <(curl -s https://codecov.io/bash); fi'
 matrix:

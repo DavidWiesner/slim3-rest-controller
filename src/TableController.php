@@ -20,16 +20,16 @@ class TableController
     /**
      * @var DataAccess
      */
-    protected $dataaccess;
+    protected $dataAccess;
 
     /**
      * @param \Psr\Log\LoggerInterface $logger
-     * @param DataAccess $dataaccess
+     * @param DataAccess $dataAccess
      */
-    public function __construct(LoggerInterface $logger, DataAccess $dataaccess)
+    public function __construct(DataAccess $dataAccess, LoggerInterface $logger = null)
     {
+        $this->dataAccess = $dataAccess;
         $this->logger = $logger;
-        $this->dataaccess = $dataaccess;
     }
 
     /**
@@ -44,7 +44,7 @@ class TableController
         $path = $args['table'];
         $params = $request->getParams();
         try {
-            $result = $this->dataaccess->select($path, [], $params);
+            $result = $this->dataAccess->select($path, [], $params);
         } catch (\PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400, $exception->getMessage());
@@ -66,7 +66,7 @@ class TableController
         $path = $args['table'];
 
         try {
-            $result = $this->dataaccess->select($path, [], $args);
+            $result = $this->dataAccess->select($path, [], $args);
         } catch (\PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400, $exception->getMessage());
@@ -89,7 +89,7 @@ class TableController
         $request_data = $request->getParsedBody();
 
         try {
-            $last_inserted_id = $this->dataaccess->insert($path, $request_data);
+            $last_inserted_id = $this->dataAccess->insert($path, $request_data);
         } catch (\PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(403);
@@ -113,10 +113,10 @@ class TableController
         $path = $args['table'];
         $data = $request->getParsedBody();
 
-        try{
+        try {
             $filter = array_merge($request->getQueryParams(), $args);
-            $affectedRows = $this->dataaccess->update($path, $data, $filter);
-            if($affectedRows === 0){
+            $affectedRows = $this->dataAccess->update($path, $data, $filter);
+            if ($affectedRows === 0) {
                 return $response->withStatus(404);
             }
             return $response->withStatus(200);
@@ -137,15 +137,15 @@ class TableController
     {
         $this->logger->info(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . __FUNCTION__);
         $path = $args['table'];
-        try{
+        try {
             $filter = array_merge($request->getQueryParams(), $args);
-            $affectedRows = $this->dataaccess->delete($path, $filter);
+            $affectedRows = $this->dataAccess->delete($path, $filter);
             if ($affectedRows) {
                 return $response->withStatus(204);
             } else {
                 return $response->withStatus(404);
             }
-        } catch(\PDOException $exception){
+        } catch (\PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400);
         }
@@ -156,11 +156,15 @@ class TableController
      */
     private function logCall($func)
     {
-        $this->logger->info(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $func);
+        if($this->logger != null){
+            $this->logger->info(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $func);
+        }
     }
 
-    private function logException(\PDOException $e){
-        $this->logger->warning(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $e->getMessage());
-
+    private function logException(\PDOException $e)
+    {
+        if($this->logger != null) {
+            $this->logger->warning(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $e->getMessage());
+        }
     }
 }
