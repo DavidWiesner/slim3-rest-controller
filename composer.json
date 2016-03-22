@@ -1,0 +1,30 @@
+{
+  "name": "dboho/slim3-rest-controller",
+  "description": "Simple REST controller for Slim3",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "David Wiesner"
+    }
+  ],
+  "require": {
+    "php": "~5.5 || ~7.0",
+    "slim/slim": "^3.0",
+    "monolog/monolog": "^1.13",
+    "dboho/simple-database-api": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "DBoho\\Slim\\Controller\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DBohoTest\\Slim\\Controller\\": "tests"
+    }
+  }
+}
