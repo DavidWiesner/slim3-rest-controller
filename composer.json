@@ -1,7 +1,6 @@
 {
   "name": "dboho/slim3-rest-controller",
   "description": "Simple REST controller for Slim3",
-  "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
     {
