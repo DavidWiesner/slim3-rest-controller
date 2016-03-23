@@ -86,7 +86,7 @@ class TableController
         $this->logCall(__FUNCTION__);
 
         $path = $args['table'];
-        $request_data = $request->getParsedBody();
+        $request_data = $this->getAddData($args['table'], $request, $args);
 
         try {
             $last_inserted_id = $this->dataAccess->insert($path, $request_data);
@@ -100,6 +100,19 @@ class TableController
     }
 
     /**
+     * @param string $table
+     * @param Request $request
+     * @param array $args
+     * @return array|null|object
+     */
+    protected function getAddData($table, Request $request, array $args)
+    {
+        $data = $request->getParsedBody();
+        return $data;
+    }
+
+
+    /**
      * @param Request $request
      * @param Response $response
      * @param array $args
@@ -111,7 +124,7 @@ class TableController
         $this->logCall(__FUNCTION__);
 
         $path = $args['table'];
-        $data = $request->getParsedBody();
+        $data = $this->getUpdateData($args['table'], $request, $args);
 
         try {
             $filter = array_merge($request->getQueryParams(), $args);
@@ -124,6 +137,18 @@ class TableController
             $this->logException($exception);
             return $response->withStatus(400);
         }
+    }
+
+    /**
+     * @param string $table
+     * @param Request $request
+     * @param array $args
+     * @return array|null|object
+     */
+    protected function getUpdateData($table, Request $request, array $args)
+    {
+        $data = $request->getParsedBody();
+        return $data;
     }
 
     /**
