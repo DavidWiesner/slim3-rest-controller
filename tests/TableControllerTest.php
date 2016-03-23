@@ -92,7 +92,7 @@ class TableControllerTest extends WebTestCase
     {
         $response = $this->client->post('/noauth/api/books', ['title' => 'first']);
 
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testAppInsertMoreRequired()

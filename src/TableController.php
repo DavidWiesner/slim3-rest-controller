@@ -92,7 +92,7 @@ class TableController
             $last_inserted_id = $this->dataAccess->insert($path, $request_data);
         } catch (\PDOException $exception) {
             $this->logException($exception);
-            return $response->withStatus(403);
+            return $response->withStatus(400);
         }
         $uri = $request->getUri();
         $LocationHeader = $uri->withPath($uri->getPath() . '/' . (string)$last_inserted_id);
