@@ -89,7 +89,8 @@ class TableController
         $request_data = $this->getAddData($args['table'], $request, $args);
 
         try {
-            $last_inserted_id = $this->dataAccess->insert($path, $request_data);
+            $this->dataAccess->insert($path, $request_data);
+            $last_inserted_id = $this->dataAccess->getLastInsertId();
         } catch (\PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400);
