@@ -178,18 +178,25 @@ class TableController
     }
 
     /**
-     * @param $func
+     * Log the call to a function
+     *
+     * @param string $func name of function called
      */
-    private function logCall($func)
+    protected function logCall($func)
     {
-        if($this->logger != null){
+        if ($this->logger != null) {
             $this->logger->info(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $func);
         }
     }
 
-    private function logException(\PDOException $e)
+    /**
+     * Log the message of an Exception
+     *
+     * @param \Exception $e the Exception that should be logged
+     */
+    protected function logException(\Exception $e)
     {
-        if($this->logger != null) {
+        if ($this->logger != null) {
             $this->logger->warning(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $e->getMessage());
         }
     }
