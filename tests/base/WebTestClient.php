@@ -1,6 +1,7 @@
 <?php
 namespace DBohoTest\Slim\Controller\base;
 
+use BadMethodCallException;
 use Psr\Http\Message\ResponseInterface;
 use Slim\App;
 use Slim\Http\Environment;
@@ -27,11 +28,11 @@ class WebTestClient
      */
     public $app;
     /**
-     * @var \Slim\Http\Request
+     * @var Request
      */
     public $request;
     /**
-     * @var \Slim\Http\Response
+     * @var Response
      */
     public $response;
     // We support these methods for testing. These are available via
@@ -51,7 +52,7 @@ class WebTestClient
             list($path, $data, $headers) = array_pad($arguments, 3, array());
             return $this->request($method, $path, $data, $headers);
         }
-        throw new \BadMethodCallException(strtoupper($method) . ' is not supported');
+        throw new BadMethodCallException(strtoupper($method) . ' is not supported');
     }
     // Abstract way to make a request to SlimPHP, this allows us to mock the
     // slim environment

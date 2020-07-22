@@ -3,6 +3,9 @@
 namespace DBoho\Slim\Controller;
 
 use DBoho\IO\DataAccess;
+use Exception;
+use PDOException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -13,7 +16,7 @@ use Slim\Http\Response;
 class TableController
 {
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -23,7 +26,7 @@ class TableController
     protected $dataAccess;
 
     /**
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @param DataAccess $dataAccess
      */
     public function __construct(DataAccess $dataAccess, LoggerInterface $logger = null)
@@ -36,7 +39,7 @@ class TableController
      * @param Request $request
      * @param Response $response
      * @param array $args
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function getAll(Request $request, Response $response, $args)
     {
@@ -45,7 +48,7 @@ class TableController
         $params = $request->getParams();
         try {
             $result = $this->dataAccess->select($path, [], $params);
-        } catch (\PDOException $exception) {
+        } catch (PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400, $exception->getMessage());
         }
@@ -57,7 +60,7 @@ class TableController
      * @param Response $response
      * @param array $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function get(Request $request, Response $response, $args)
     {
@@ -67,7 +70,7 @@ class TableController
 
         try {
             $result = $this->dataAccess->select($path, [], $args);
-        } catch (\PDOException $exception) {
+        } catch (PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400, $exception->getMessage());
         }
@@ -79,7 +82,7 @@ class TableController
      * @param Response $response
      * @param array $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function add(Request $request, Response $response, $args)
     {
@@ -91,7 +94,7 @@ class TableController
         try {
             $this->dataAccess->insert($path, $request_data);
             $last_inserted_id = $this->dataAccess->getLastInsertId();
-        } catch (\PDOException $exception) {
+        } catch (PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400);
         }
@@ -108,8 +111,7 @@ class TableController
      */
     protected function getAddData($table, Request $request, array $args)
     {
-        $data = $request->getParsedBody();
-        return $data;
+        return $request->getParsedBody();
     }
 
 
@@ -118,7 +120,7 @@ class TableController
      * @param Response $response
      * @param array $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function update(Request $request, Response $response, $args)
     {
@@ -134,7 +136,7 @@ class TableController
                 return $response->withStatus(404);
             }
             return $response->withStatus(200);
-        } catch (\PDOException $exception) {
+        } catch (PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400);
         }
@@ -148,8 +150,7 @@ class TableController
      */
     protected function getUpdateData($table, Request $request, array $args)
     {
-        $data = $request->getParsedBody();
-        return $data;
+        return $request->getParsedBody();
     }
 
     /**
@@ -157,7 +158,7 @@ class TableController
      * @param Response $response
      * @param array $args
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function delete(Request $request, Response $response, $args)
     {
@@ -171,7 +172,7 @@ class TableController
             } else {
                 return $response->withStatus(404);
             }
-        } catch (\PDOException $exception) {
+        } catch (PDOException $exception) {
             $this->logException($exception);
             return $response->withStatus(400);
         }
@@ -192,9 +193,9 @@ class TableController
     /**
      * Log the message of an Exception
      *
-     * @param \Exception $e the Exception that should be logged
+     * @param Exception $e the Exception that should be logged
      */
-    protected function logException(\Exception $e)
+    protected function logException(Exception $e)
     {
         if ($this->logger != null) {
             $this->logger->warning(substr(strrchr(rtrim(__CLASS__, '\\'), '\\'), 1) . ': ' . $e->getMessage());

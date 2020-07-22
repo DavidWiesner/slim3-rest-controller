@@ -5,7 +5,6 @@ use DBoho\IO\DataAccess;
 use DBoho\Slim\Controller\TableController;
 use DBohoTest\Slim\Controller\base\WebTestCase;
 use PDOException;
-use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Log\LoggerInterface;
 use Slim\Http\Response;
 
@@ -25,7 +24,7 @@ class TableControllerTest extends WebTestCase
      */
     private $logger;
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var PHPUnit\
      */
     private $dataAccessMock;
 
@@ -217,8 +216,9 @@ class TableControllerTest extends WebTestCase
         $container[TableController::class] = function ($c) {
             return new TableController($this->dataaccess, $this->logger);
         };
-        $this->logger = $this->getMock(LoggerInterface::class);
-        $this->dataAccessMock = $this->getMock(DataAccess::class, [],[$this->pdo]);//->disableOriginalConstructor()->getMock();
+        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->dataAccessMock = $this->getMockBuilder(DataAccess::class)
+            ->setConstructorArgs([$this->pdo])->getMock();//->disableOriginalConstructor()->getMock();
         $this->controller = new TableController($this->dataAccessMock, $this->logger);
         $this->app->group('/noauth/api/{table:books}', function () {
             $this->get('', TableController::class . ':getAll');

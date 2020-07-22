@@ -8,14 +8,14 @@
 namespace DBohoTest\Slim\Controller\base;
 
 use PDO;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Slim\App;
 
-class WebTestCase extends PHPUnit_Framework_TestCase
+class WebTestCase extends TestCase
 {
 	protected static $sql;
 	/**
-	 * @var \Slim\App
+	 * @var App
 	 */
 	protected $app;
 	/**
